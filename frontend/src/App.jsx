@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './general.css';
+import { RotatingCard } from './components/RotatingCard';
 
 function App() {
   const [isDragging, setIsDragging] = useState(false);
@@ -17,7 +18,7 @@ function App() {
     if (!isDragging) return;
 
     const dx = event.clientX - startX;
-    const rotationY = currentRotation + dx * 0.5; // Adjust rotation speed as needed
+    const rotationY = currentRotation + dx * 0.05; // Adjust rotation speed as needed
     satellitesRef.current.style.transform = `rotateY(${rotationY}deg)`;
   };
 
@@ -26,7 +27,7 @@ function App() {
 
     setIsDragging(false);
     const dx = event.clientX - startX;
-    const newRotation = currentRotation + dx * 0.5;
+    const newRotation = currentRotation + dx * 0.05;
     const snappedRotation = Math.round(newRotation / 120) * 120; // Snap to the nearest 120 degrees
     satellitesRef.current.style.transition = 'transform 0.5s ease'; // Enable transition for smooth snapping
     satellitesRef.current.style.transform = `rotateY(${snappedRotation}deg)`;
@@ -42,9 +43,9 @@ function App() {
       onMouseUp={handleMouseUp}
       onContextMenu={(e) => e.preventDefault()} // Prevent right-click menu
     >
-      <div className="satellite" style={{ '--i': 0 }}>학술팀</div>
-      <div className="satellite" style={{ '--i': 120 }}>미디어팀</div>
-      <div className="satellite" style={{ '--i': 240 }}>디자인팀</div>
+      <RotatingCard i={0} text="개발팀" />
+      <RotatingCard i={120} text="디자인팀" />
+      <RotatingCard i={240} text="미디어팀" />
     </div>
   );
 }
