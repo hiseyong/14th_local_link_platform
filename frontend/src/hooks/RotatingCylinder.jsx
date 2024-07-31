@@ -6,7 +6,7 @@ import '../style/teamSelectionPage.css';
 export function RotatingCylinder({items}) {
     const navigate = useNavigate();
     const length = items.length;
-    const unitAngle = 360 / length;
+    const unitAngle = 360 / length; 
 
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
@@ -96,7 +96,8 @@ export function RotatingCylinder({items}) {
         >
             {items.map((item, index) => {
                 return (
-                    <RotatingCard 
+                    <RotatingCard
+                    style={{transform: `rotateY(${unitAngle * index}deg) translateZ(${length * 3}em) perspective(${length * 3}em)`}}
                     key={index}
                     i={unitAngle * index}
                     text={item.text} 
