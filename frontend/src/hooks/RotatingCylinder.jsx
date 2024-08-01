@@ -3,7 +3,7 @@ import { RotatingCard } from '../components/RotatingCard';
 import { useNavigate } from 'react-router-dom';
 import '../style/teamSelectionPage.css';
 
-export function RotatingCylinder({items}) {
+export function RotatingCylinder({items, onClick}) {
     const navigate = useNavigate();
     const length = items.length;
     const unitAngle = 360 / length; 
@@ -73,13 +73,12 @@ export function RotatingCylinder({items}) {
         setClosestIndex((index + length) % length);
     }, [currentRotation]);
 
-    const handleCardClick = (index) => {
-        const links = ['/academic/', '/media/', '/design/'];
+    const handleCardClick = (index, link) => {
         if (expanded) return;
         if (closestIndex !== index) return;
         setSelectedIndex(index);
         setExpanded(true);
-        setTimeout(() => navigate(links[index]) , 800);
+        setTimeout(() => navigate(link) , 800);
     };
 
     return (
@@ -101,7 +100,7 @@ export function RotatingCylinder({items}) {
                     key={index}
                     i={unitAngle * index}
                     text={item.text} 
-                    onClick={() => handleCardClick(index)} 
+                    onClick={onClick ? () => onClick(index) : () => handleCardClick(index, item.link)} 
                     isFront={closestIndex === index} 
                     isExpanded={expanded && selectedIndex === index}
                     isDisappear={expanded && selectedIndex !== index}
