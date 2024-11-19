@@ -9,4 +9,5 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #1D8352;
 }
