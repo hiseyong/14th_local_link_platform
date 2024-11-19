@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Greeting } from "./pages/Greeting";
-import { Selection } from "./pages/Selection";
+import { Main } from "./pages/Main";
 
 function App() {
   const [startX, setStartX] = useState(0);
   const [translateX, setTranslateX] = useState(0);
   const [isSwiped, setIsSwiped] = useState(false);
+  const [token, setToken] = useState(null);
 
   const handleTouchStart = (e) => {
     setStartX(e.touches[0].clientX);
@@ -80,7 +81,7 @@ function App() {
           zIndex: 0,
         }}
       >
-        <Selection />
+        <Main />
       </div>
     </div>
   );
