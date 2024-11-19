@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { Greeting } from "./pages/Greeting"; // Greeting 컴포넌트 임포트
+import { Greeting } from "./pages/Greeting";
 import { Selection } from "./pages/Selection";
 
 function App() {
   const [startX, setStartX] = useState(0);
-  const [translateX, setTranslateX] = useState(0); // translateX 상태 관리
-  const [isSwiped, setIsSwiped] = useState(false); // 스와이프 여부 상태
-  const [opacity, setOpacity] = useState(1); // opacity 상태
+  const [translateX, setTranslateX] = useState(0);
+  const [isSwiped, setIsSwiped] = useState(false);
 
   const handleTouchStart = (e) => {
-    setStartX(e.touches[0].clientX); // 터치 시작 위치
+    setStartX(e.touches[0].clientX);
   };
 
   const handleTouchMove = (e) => {
@@ -17,27 +16,25 @@ function App() {
     const deltaX = currentX - startX;
 
     if (!isSwiped) {
-      setTranslateX(deltaX); // 스와이프 중인 위치에 따라 translateX 값 설정
-      setOpacity(1 - Math.abs(deltaX) / window.innerWidth); // 스와이프 진행에 따라 opacity 변경
+      setTranslateX(deltaX);
     }
   };
 
   const handleTouchEnd = () => {
-    if (translateX < -100) {
-      setIsSwiped(true); // 왼쪽으로 충분히 스와이프한 경우
+    // isSwiped가 false일 때만 변경
+    if (!isSwiped && translateX < -100) {
+      setIsSwiped(true); // 스와이프가 완료된 상태로 설정
     } else {
-      setTranslateX(0); // 스와이프가 충분하지 않으면 원래 위치로 되돌리기
-      setOpacity(1); // opacity 원래대로
+      setTranslateX(0); // 원래 위치로 되돌리기
     }
   };
 
   const handleScroll = (e) => {
     const deltaScroll = e.deltaY;
 
+    // isSwiped가 false일 때만 변경
     if (!isSwiped && deltaScroll > 0) {
       setIsSwiped(true); // 스크롤로 스와이프 발생
-    } else if (isSwiped && deltaScroll < 0) {
-      setIsSwiped(false); // 스크롤로 다시 원래 상태로
     }
   };
 
@@ -53,10 +50,23 @@ function App() {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      onWheel={handleScroll}
+      onWheel={handleScroll} // PC 스크롤 이벤트 처리
     >
       {/* Greeting */}
-      <Greeting translateX={isSwiped ? '-100%' : 0} opacity={opacity} />
+      <div
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          transform: `translateX(${isSwiped ? "-100%" : translateX}px)`,
+          opacity: `${isSwiped ? 0 : 1}`,
+          transition: isSwiped ? "transform 0.3s ease-in-out, opacity 0.3s ease-in-out" : "none",
+          zIndex: 1,
+          transformOrigin: "left center",
+        }}
+      >
+        <Greeting />
+      </div>
 
       {/* Example */}
       <div
@@ -67,7 +77,6 @@ function App() {
           transform: `translateX(${isSwiped ? "0" : "100%"}) scale(${isSwiped ? 1 : 0.8})`,
           opacity: `${isSwiped ? 1 : 0}`,
           transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out, scale 0.3s ease-in-out",
-          backgroundColor: "#e0e0e0",
           zIndex: 0,
         }}
       >
