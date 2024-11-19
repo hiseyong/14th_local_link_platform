@@ -2,42 +2,74 @@ import { useState } from "react";
 import { Greeting } from "./pages/Greeting";
 
 function Example() {
-  return <div style={{ padding: "20px" }}>Example Page</div>;
+  return <div style={{ padding: "20px", backgroundColor: "#f0f0f0" }}>Example Page</div>;
 }
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("Greeting"); // 현재 페이지 상태
-  const [startX, setStartX] = useState(0); // 스와이프 시작 지점
+  const [startX, setStartX] = useState(0);
+  const [translateX, setTranslateX] = useState(0);
+  const [isSwiped, setIsSwiped] = useState(false);
 
-  // 터치 시작
   const handleTouchStart = (e) => {
-    setStartX(e.touches[0].clientX); // 시작 지점 기록
+    console.log("Touch start detected"); // 디버깅 로그 추가
+    setStartX(e.touches[0].clientX);
   };
 
-  // 터치 이동
   const handleTouchMove = (e) => {
-    const deltaX = e.touches[0].clientX - startX; // 이동 거리 계산
-    if (deltaX < -150) {
-      setCurrentPage("Example"); // 스와이프 이동 거리 조건 충족 시 페이지 변경
+    const currentX = e.touches[0].clientX;
+    const deltaX = currentX - startX;
+
+    if (!isSwiped && deltaX < 0) {
+      setTranslateX(deltaX);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (translateX < -100) {
+      setIsSwiped(true);
+    } else {
+      setTranslateX(0);
     }
   };
 
   return (
     <div
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
       style={{
         overflow: "hidden",
-        transition: "transform 0.3s ease-in-out",
-        transform: currentPage === "Greeting" ? "translateX(0)" : "translateX(-100%)",
-        display: "flex",
-        width: "200%",
+        position: "relative",
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "#fff",
       }}
+      onTouchStart={handleTouchStart} // 부모 컨테이너에 터치 이벤트 등록
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
-      <div style={{ width: "50%", flexShrink: 0 }}>
+      {/* Greeting */}
+      <div
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          transform: `translateX(${isSwiped ? "-100%" : translateX}px)`,
+          transition: isSwiped ? "transform 0.3s ease-in-out" : "none",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
         <Greeting />
       </div>
-      <div style={{ width: "50%", flexShrink: 0 }}>
+
+      {/* Example */}
+      <div
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          transform: `translateX(${isSwiped ? "0" : "100%"})`,
+          transition: "transform 0.3s ease-in-out",
+          backgroundColor: "#e0e0e0",
+        }}
+      >
         <Example />
       </div>
     </div>
