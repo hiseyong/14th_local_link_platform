@@ -62,7 +62,7 @@ function App() {
           transform: `translateX(${isSwiped ? "-100%" : translateX}px)`,
           opacity: `${isSwiped ? 0 : 1}`,
           transition: isSwiped ? "transform 0.3s ease-in-out, opacity 0.3s ease-in-out" : "none",
-          zIndex: 1,
+          zIndex: 0,
           transformOrigin: "left center",
         }}
       >
@@ -77,8 +77,9 @@ function App() {
           height: "100%",
           transform: `translateX(${isSwiped ? "0" : "100%"}) scale(${isSwiped ? 1 : 0.8})`,
           opacity: `${isSwiped ? 1 : 0}`,
-          transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out, scale 0.3s ease-in-out",
+          transition: "transform 0.6s ease-in-out, opacity 0.6s ease-in-out, scale 0.6s ease-in-out",
           zIndex: 0,
+          backgroundColor: "#1D8352",
         }}
       >
         <Main />

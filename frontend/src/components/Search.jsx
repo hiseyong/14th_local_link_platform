@@ -8,6 +8,7 @@ const Searchwrapper = styled.div`
     justify-content: center;
     align-items: center;
     height: 50px;
+    margin-top: 15px;
 `;
 
 const SearchContainer = styled.div`
@@ -18,6 +19,7 @@ const SearchContainer = styled.div`
     padding: 5px 10px;
     width: 300px;
     margin-left: 10px;
+    background-color: #fff;
 `;
 
 const SearchInput = styled.input`

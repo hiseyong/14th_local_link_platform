@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaHeart, FaBook, FaFilm, FaPaintBrush, FaHome } from "react-icons/fa";
 import styled from "styled-components";
+import { Link } from "react-router-dom"; // Link 컴포넌트 추가
 
 const NavbarContainer = styled.div`
   position: fixed;
@@ -27,18 +28,18 @@ const NavItem = styled.div`
 
   & svg {
     font-size: 24px;
-    color: ${(props) => (props.isActive ? "#007BFF" : "#aaa")};
+    color: ${(props) => (props.isActive ? "#1D8352" : "#aaa")};
     transition: color 0.3s;
   }
 
   & span {
     margin-top: 5px;
     font-size: 12px;
-    color: ${(props) => (props.isActive ? "#007BFF" : "#aaa")};
+    color: ${(props) => (props.isActive ? "#1D8352" : "#aaa")};
   }
 
   &:hover svg {
-    color: #007bff;
+    color: #1DB522;
   }
 `;
 
@@ -47,26 +48,36 @@ export const BottomNavBar = () => {
 
   return (
     <NavbarContainer>
-      <NavItem isActive={activeTab === "academic"} onClick={() => setActiveTab("academic")}>
-        <FaBook />
-        <span>학술</span>
-      </NavItem>
-      <NavItem isActive={activeTab === "media"} onClick={() => setActiveTab("media")}>
-        <FaFilm />
-        <span>미디어</span>
-      </NavItem>
-      <NavItem isActive={activeTab === "home"} onClick={() => setActiveTab("home")}>
-        <FaHome />
-        <span>전체</span>
-      </NavItem>
-      <NavItem isActive={activeTab === "design"} onClick={() => setActiveTab("design")}>
-        <FaPaintBrush />
-        <span>디자인</span>
-      </NavItem>
-      <NavItem isActive={activeTab === "like"} onClick={() => setActiveTab("like")}>
-        <FaHeart />
-        <span>찜</span>
-      </NavItem>
+      <Link to="/academic" style={{ textDecoration: 'none' }}>
+        <NavItem isActive={activeTab === "academic"} onClick={() => setActiveTab("academic")}>
+          <FaBook />
+          <span>학술</span>
+        </NavItem>
+      </Link>
+      <Link to="/media" style={{ textDecoration: 'none' }}>
+        <NavItem isActive={activeTab === "media"} onClick={() => setActiveTab("media")}>
+          <FaFilm />
+          <span>미디어</span>
+        </NavItem>
+      </Link>
+      <Link to="/" style={{ textDecoration: 'none' }}>
+        <NavItem isActive={activeTab === "home"} onClick={() => setActiveTab("home")}>
+          <FaHome />
+          <span>전체</span>
+        </NavItem>
+      </Link>
+      <Link to="/design" style={{ textDecoration: 'none' }}>
+        <NavItem isActive={activeTab === "design"} onClick={() => setActiveTab("design")}>
+          <FaPaintBrush />
+          <span>디자인</span>
+        </NavItem>
+      </Link>
+      <Link to="/likes" style={{ textDecoration: 'none' }}>
+        <NavItem isActive={activeTab === "likes"} onClick={() => setActiveTab("likes")}>
+          <FaHeart />
+          <span>찜</span>
+        </NavItem>
+      </Link>
     </NavbarContainer>
   );
 };
