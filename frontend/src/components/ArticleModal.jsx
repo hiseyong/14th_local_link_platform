@@ -82,7 +82,7 @@ export const ArticleModal = ({ title, abstract, onClose }) => {
                     <h3>초록</h3>
                     <p>{abstract}</p>
                 </TextWrapper>
-                <ArticleButton onClick={onClose}>논문 열람하기</ArticleButton>
+                <ArticleButton onClick={()=>{}}>논문 열람하기</ArticleButton>
             </ModalContent>
         </ModalWrapper>
     </ModalOverlay>
