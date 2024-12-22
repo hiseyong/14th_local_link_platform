@@ -11,17 +11,18 @@ const PaperContainer = styled.div`
 
 const Title = styled.h2`
   font-size: 2.5vh;
+
   margin: 0;
   color: #FFFFFF;
 `;
 
-const Authors = styled.h4`
+const Authors = styled.p`
   font-size: 2.0vh;
   margin: 8px 0 4px;
   color: #FFFFFF;
 `;
 
-const Affiliation = styled.h4`
+const Affiliation = styled.p`
   font-size: 2.0vh;
   margin: 4px 0;
   color: #FFFFFF;
