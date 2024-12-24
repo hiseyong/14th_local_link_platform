@@ -13,6 +13,7 @@ export function LikedLiteratures() {
     const client = axios.create();
     const [initialID, setInitialID] = useState([]);
     const [articles, setArticles] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem("likedArticles")) {
@@ -29,10 +30,11 @@ export function LikedLiteratures() {
     }, []);
 
     useEffect(()=>{
-        client.get('http://localhost:8000/paperListAll')
+        client.get('http://54.180.92.43/paperListAll')
         .then((response) => {
             console.log(response);
             setArticles(response.data);
+            setIsLoaded(true);
         })
         .catch((error) => {
             console.error(error);
@@ -42,10 +44,10 @@ export function LikedLiteratures() {
     return (
         <PaperContainer>
             {
-                articles.map((article) => {
+                isLoaded ? articles.map((article) => {
                     if (initialID.includes(article.id)) return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
-
                 })
+                : <center style={{height: '100%', justifyContent: 'center', alignContent:'center', fontSize:'1vh'}}>로딩 중...</center>
             }
         </PaperContainer>
     )

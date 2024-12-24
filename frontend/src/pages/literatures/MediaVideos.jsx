@@ -13,6 +13,7 @@ export function MediaVideos() {
     const client = axios.create();
     const [initialID, setInitialID] = useState([]);
     const [articles, setArticles] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem("likedArticles")) {
@@ -29,10 +30,11 @@ export function MediaVideos() {
     }, []);
 
     useEffect(()=>{
-        client.post('http://localhost:8000/paperList', {"data": "ME"})
+        client.post('http://54.180.92.43/paperList', {"data": "ME"})
         .then((response) => {
             console.log(response);
             setArticles(response.data);
+            setIsLoaded(true);
         })
         .catch((error) => {
             console.error(error);
@@ -41,11 +43,12 @@ export function MediaVideos() {
 
     return (
         <PaperContainer>
-            {
-                articles.map((article) => {
-                    return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
-                })
-            }
+        {
+            isLoaded ? articles.map((article) => {
+                return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
+            })
+            : <center style={{height: '100%', justifyContent: 'center', alignContent:'center', fontSize:'1vh'}}>로딩 중...</center>
+        }
         </PaperContainer>
     )
 }

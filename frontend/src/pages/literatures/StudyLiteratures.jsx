@@ -13,6 +13,7 @@ export function StudyLiterature() {
     const client = axios.create();
     const [initialID, setInitialID] = useState([]);
     const [articles, setArticles] = useState([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem("likedArticles")) {
@@ -29,10 +30,11 @@ export function StudyLiterature() {
     }, []);
 
     useEffect(()=>{
-        client.post('http://localhost:8000/paperList', {"data": "AC"})
+        client.post('http://54.180.92.43/paperList', {"data": "AC"})
         .then((response) => {
             console.log(response);
             setArticles(response.data);
+            setIsLoaded(true);
         })
         .catch((error) => {
             console.error(error);
@@ -41,11 +43,12 @@ export function StudyLiterature() {
 
     return (
         <PaperContainer>
-            {
-                articles.map((article) => {
-                    return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
-                })
-            }
+        {
+            isLoaded ? articles.map((article) => {
+                return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
+            })
+            : <center style={{height: '100%', justifyContent: 'center', alignContent:'center', fontSize:'1vh'}}>로딩 중...</center>
+        }
         </PaperContainer>
     )
 }
