@@ -28,7 +28,7 @@ const ModalContent = styled.div`
   padding: 20px;
   border-radius: 8px;
   width: 90%;
-  height: 70%;
+  height: fit-content;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin: 10px;
 `;
@@ -44,9 +44,9 @@ const ArticleButton = styled.button`
   padding: 8px 16px;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 1.5vh;
-  width: 30%;
-  margin-bottom: 20px;
+  font-size: 200%;
+  width: 40%;
+  margin-top: 10px;
   &:hover {
     background: #1DB522;
   }
@@ -59,7 +59,7 @@ const CloseButton = styled.button`
   background: transparent;
   color: #000000;
   border: none;
-  font-size: 3vh;
+  font-size: 400%;
   cursor: pointer;
   &:hover {
     color: #d32f2f;
@@ -86,7 +86,8 @@ const Caption = styled.p`
 
 const CaptionWrapper = styled.div`
   margin: 0.5em 0;
-  height: 75%;
+  height: 60%;
+  max-height: 40vh;
   overflow-y: auto;
 `;
 

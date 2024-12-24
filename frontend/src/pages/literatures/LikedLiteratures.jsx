@@ -9,7 +9,7 @@ const PaperContainer = styled.div`
     height: 80%;
 `;
 
-export function StudyLiterature() {
+export function LikedLiteratures() {
     const client = axios.create();
     const [initialID, setInitialID] = useState([]);
     const [articles, setArticles] = useState([]);
@@ -29,7 +29,7 @@ export function StudyLiterature() {
     }, []);
 
     useEffect(()=>{
-        client.post('http://localhost:8000/paperList', {"data": "AC"})
+        client.get('http://localhost:8000/paperListAll')
         .then((response) => {
             console.log(response);
             setArticles(response.data);
@@ -43,7 +43,8 @@ export function StudyLiterature() {
         <PaperContainer>
             {
                 articles.map((article) => {
-                    return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
+                    if (initialID.includes(article.id)) return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
+
                 })
             }
         </PaperContainer>
