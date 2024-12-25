@@ -11,6 +11,7 @@ const Searchwrapper = styled.div`
     height: 5%;
     margin-top: 15px;
     padding-top: 30px;
+    padding-bottom: 30px;
 `;
 
 const SearchContainer = styled.div`
