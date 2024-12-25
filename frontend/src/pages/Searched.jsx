@@ -1,7 +1,9 @@
-import { Article } from "../../components/Article"
+import { Article } from "../components/Article"
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
+
 
 const PaperContainer = styled.div`
     padding: 16px;
@@ -9,12 +11,12 @@ const PaperContainer = styled.div`
     height: 80%;
 `;
 
-export function LikedLiteratures() {
+export function Searched() {
+    const { id } = useParams();
     const client = axios.create();
     const [initialID, setInitialID] = useState([]);
     const [articles, setArticles] = useState([]);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [likedArticles, setLikedArticles] = useState([]);
 
     useEffect(() => {
         if (localStorage.getItem("likedArticles")) {
@@ -31,32 +33,25 @@ export function LikedLiteratures() {
     }, []);
 
     useEffect(()=>{
-        client.get('https://locallink.hasclassmatching.com/paperListAll')
+        client.post('https://locallink.hasclassmatching.com/paperInfoAll', {"data": id})
         .then((response) => {
-            console.log(response);
+            console.log(response.data);
             setArticles(response.data);
             setIsLoaded(true);
         })
         .catch((error) => {
             console.error(error);
         })
-    },[])
-
-    useEffect(()=>{
-        const likedArticles = articles.filter((article) => {
-            return initialID.includes(article.id);
-        })
-        setLikedArticles(likedArticles);
-    })
+    },[id])
 
     return (
         <PaperContainer>
-            {
-                isLoaded ? likedArticles.length!==0? likedArticles.map((article) => {
-                    return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
-                }) : <center style={{height: '100%', justifyContent: 'center', alignContent:'center', fontSize:'1vh'}}>찜한 논문이 없습니다.</center>
-                : <center style={{height: '100%', justifyContent: 'center', alignContent:'center', fontSize:'1vh'}}>로딩 중...</center>
-            }
+        {
+            isLoaded ? articles.map((article) => {
+                return <Article title={article.title} authors={article.authors} affiliation={""} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
+            })
+            : <center style={{height: '100%', justifyContent: 'center', alignContent:'center', fontSize:'1vh'}}>로딩 중...</center>
+        }
         </PaperContainer>
     )
 }

@@ -1,5 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
+import axios from "axios";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -15,12 +16,12 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalWrapper = styled.div`
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
-    height: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: 100%;
 `;
 
 const ModalContent = styled.div`
@@ -35,10 +36,10 @@ const ModalContent = styled.div`
 
 const TextWrapper = styled.div`
   height: 90%;
-`
+`;
 
 const ArticleButton = styled.button`
-  background: #1D8352;
+  background: #1d8352;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -48,7 +49,7 @@ const ArticleButton = styled.button`
   width: 40%;
   margin-top: 10px;
   &:hover {
-    background: #1DB522;
+    background: #1db522;
   }
 `;
 
@@ -91,25 +92,73 @@ const CaptionWrapper = styled.div`
   overflow-y: auto;
 `;
 
-export const ArticleModal = ({ title, authors, keywords, abstract, onClose }) => {
+const IframeWrapper = styled.iframe`
+  width: 80%;
+  height: 80%;
+  border: none;
+  background-color: #ffffff; /* PDF가 흰 배경으로 보이도록 */
+`;
+
+export const ArticleModal = ({ title, authors, keywords, abstract, id, onClose }) => {
+  const [btnTxt, setBtnTxt] = useState("논문 열람하기");
+  const [isViewingPDF, setIsViewingPDF] = useState(false); // PDF 뷰어 모달 상태
+  const [pdfUrl, setPDFUrl] = useState(null); // PDF URL 상태
+
+  const client = axios.create();
+
+  const handleDownloadAndView = async () => {
+    setBtnTxt("다운로드 중...");
+    try {
+      const response = await client.post(
+        "https://locallink.hasclassmatching.com/paperGet",
+        { data: id },
+        { responseType: "blob" } // 서버로부터 blob 데이터 받기
+      );
+
+      if (response.data.size === 0) {
+        throw new Error("서버에서 받은 파일 데이터가 비어 있습니다.");
+      }
+
+      const blob = new Blob([response.data], { type: "application/pdf" }); // Blob 생성
+      const url = window.URL.createObjectURL(blob); // Blob URL 생성
+      setPDFUrl(url); // PDF URL 저장
+      setIsViewingPDF(true); // PDF 뷰어 모달 열기
+      onClose(); // 현재 모달 닫기
+    } catch (error) {
+      console.error("파일 다운로드 실패:", error);
+      alert("파일을 다운로드할 수 없습니다.");
+    }
+    setBtnTxt("논문 열람하기");
+  };
+
   return (
-    <ModalOverlay onClick={onClose}>
-        <ModalWrapper>
+    <>
+      {!isViewingPDF ? (
+        <ModalOverlay onClick={onClose}>
+          <ModalWrapper>
             <ModalContent onClick={(e) => e.stopPropagation()}>
-                <TextWrapper>
-                  <CloseButton onClick={onClose}>&times;</CloseButton>
-                    <Title>{title}</Title>
-                    <hr/>
-                    <Subtitle>{`저자: ${authors.join(', ')}`}</Subtitle>
-                    <Subtitle>{`키워드: ${keywords.join(', ')}`}</Subtitle>
-                    <Subtitle>초록</Subtitle>
-                    <CaptionWrapper>
-                      <Caption>{abstract}</Caption>
-                    </CaptionWrapper>
-                </TextWrapper>
-                <ArticleButton onClick={()=>{}}>논문 열람하기</ArticleButton>
+              <TextWrapper>
+                <CloseButton onClick={onClose}>&times;</CloseButton>
+                <Title>{title}</Title>
+                <hr />
+                <Subtitle>{`저자: ${authors.join(", ")}`}</Subtitle>
+                <Subtitle>{`키워드: ${keywords.join(", ")}`}</Subtitle>
+                <Subtitle>초록</Subtitle>
+                <CaptionWrapper>
+                  <Caption>{abstract}</Caption>
+                </CaptionWrapper>
+              </TextWrapper>
+              <ArticleButton onClick={handleDownloadAndView}>{btnTxt}</ArticleButton>
             </ModalContent>
-        </ModalWrapper>
-    </ModalOverlay>
+          </ModalWrapper>
+        </ModalOverlay>
+      ) : (
+        <ModalOverlay onClick={() => setIsViewingPDF(false)}>
+          <ModalWrapper>
+            <IframeWrapper src={pdfUrl} />
+          </ModalWrapper>
+        </ModalOverlay>
+      )}
+    </>
   );
 };
