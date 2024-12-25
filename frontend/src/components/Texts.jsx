@@ -10,7 +10,7 @@ const positionStyles = css`
 
 export const Title = styled.h1`
     font-size: 5.5vh;
-    font-weight: 400;
+    font-weight: 800;
     margin: 1.8vh 0;
     position: relative;
     ${positionStyles}
