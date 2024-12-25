@@ -48,7 +48,7 @@ export function Searched() {
         <PaperContainer>
         {
             isLoaded ? articles.map((article) => {
-                return <Article title={article.title} authors={article.authors} affiliation={""} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
+                return <Article title={article.title} authors={article.authors} affiliation={article.type} keywords={article.keywords} id={article.id} initialLike={initialID.includes(article.id)} abstract={article.abstract} />
             })
             : <center style={{height: '100%', justifyContent: 'center', alignContent:'center', fontSize:'1vh'}}>로딩 중...</center>
         }
