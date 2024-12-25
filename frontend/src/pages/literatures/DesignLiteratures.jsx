@@ -30,7 +30,7 @@ export function DesignLiteratures() {
     }, []);
 
     useEffect(()=>{
-        client.post('http://54.180.92.43/paperList', {"data": "DE"})
+        client.post('https://locallink.hasclassmatching.com/paperList', {"data": "DE"})
         .then((response) => {
             console.log(response);
             setArticles(response.data);

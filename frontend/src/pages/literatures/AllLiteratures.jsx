@@ -30,7 +30,7 @@ export function AllLiteratures() {
     }, []);
 
     useEffect(()=>{
-        client.get('http://54.180.92.43/paperListAll')
+        client.get('https://locallink.hasclassmatching.com/paperListAll')
         .then((response) => {
             console.log(response);
             setArticles(response.data);

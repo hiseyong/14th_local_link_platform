@@ -30,7 +30,7 @@ export function MediaVideos() {
     }, []);
 
     useEffect(()=>{
-        client.post('http://54.180.92.43/paperList', {"data": "ME"})
+        client.post('https://locallink.hasclassmatching.com/paperList', {"data": "ME"})
         .then((response) => {
             console.log(response);
             setArticles(response.data);
