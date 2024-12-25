@@ -1,5 +1,5 @@
 import { SearchBar } from "../components/Search";
-import { Title } from "../components/Texts";
+import { Title, Caption } from "../components/Texts";
 import { ArrowAnimation } from "../components/ArrowAnimation";
 import styled from "styled-components";
 import { BounceBall } from "../components/GreetingBackground";
@@ -43,8 +43,11 @@ export function Greeting({ translateX, opacity }) {
       {/* 나머지 요소 */}
       <ContentWrapper>
         <TitleBox>
-          <Title rx="10">2024</Title>
-          <Title rx="20">지역연계</Title>
+          <Title rx="10" ry="80">2024</Title>
+          <Title rx="10" ry="80">하나고등학교</Title>
+          <Title rx="20" ry="80">지역연계프로젝트</Title>
+          <Caption rx="10">Developed by: 김서영 손은수 안세용 안혜빈</Caption>
+          <Caption rx="10">우다연 이유찬 이청미 최현종</Caption>
         </TitleBox>
         <ArrowAnimation bottom="20vh" />
       </ContentWrapper>
