@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { VideoModal } from './VideoModal';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -70,20 +71,6 @@ const VideoButton = styled.button`
   }
 `;
 
-// const CloseButton = styled.button`
-//   position: relative;
-//   left: 93%;
-//   bottom: 10px;
-//   background: transparent;
-//   color: #000000;
-//   border: none;
-//   font-size: 400%;
-//   cursor: pointer;
-//   &:hover {
-//     color: #d32f2f;
-//   }
-// `;
-
 const Title = styled.h1`
   font-size: 2vh;
   font-weight: 600;
@@ -111,8 +98,10 @@ const CaptionWrapper = styled.div`
 
 export const ArticleModal = ({ title, authors, keywords, abstract, id, onClose }) => {
   const [btnTxt, setBtnTxt] = useState('논문 열람하기');
-  const videoIds = ['ME8219', 'ME8160', 'ME5890'];
-  const urls = ['https://www.youtube.com/watch?v=1', 'https://www.youtube.com/watch?v=2', 'https://www.youtube.com/watch?v=3'];
+  const [videoUrl, setVideoUrl] = useState('');
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const videoIds = ['ME8219', 'ME8160', 'ME5890']; 
+  const urls = ['https://drive.google.com/file/d/1HdSzFHl0pkiyOBvzuoHbp8OJfF5I7liR/preview', 'https://drive.google.com/file/d/11QEVJAQXKrL5mQx4Rat6Qbt161t-wrEo/preview', 'https://drive.google.com/file/d/11VOKOxANVUgiO9hZeckdopb65iMIQHyI/preview'];
   const client = axios.create();
   const handleDownload = async () => {
     setBtnTxt('다운로드 중...');
@@ -144,35 +133,41 @@ export const ArticleModal = ({ title, authors, keywords, abstract, id, onClose }
   };
 
   const handleVideo = () => {
-    let url = '';
+    setIsVideoOpen(true);
     if (id === 'ME8219') {
-      url = urls[0];
+      setVideoUrl(urls[0]);
     } else if (id === 'ME8160') {
-      url = urls[1];
+      setVideoUrl(urls[1]);
     } else if (id === 'ME5890') {
-      url = urls[2];
+      setVideoUrl(urls[2]);
     }
-    window.open(url, '_blank');
   }
 
-  return (
-    <ModalOverlay onClick={onClose}>
-      <ModalWrapper>
-        <ModalContent onClick={(e) => e.stopPropagation()}>
-          <TextWrapper>
-            <Title>{title}</Title>
-            <hr />
-            <Subtitle>{`저자: ${authors.join(', ')}`}</Subtitle>
-            <Subtitle>{`키워드: ${keywords.join(', ')}`}</Subtitle>
-            <Subtitle>초록</Subtitle>
-            <CaptionWrapper>
-              <Caption>{abstract}</Caption>
-            </CaptionWrapper>
-          </TextWrapper>
-          <ArticleButton onClick={handleDownload}>{btnTxt}</ArticleButton>
-          {videoIds.includes(id) ? <VideoButton onClick={handleVideo}>영상 보기</VideoButton> : null}
-        </ModalContent>
-      </ModalWrapper>
-    </ModalOverlay>
-  );
+  if (isVideoOpen) {
+    return <VideoModal url={videoUrl} onClose={() => {
+      setIsVideoOpen(false)
+      onClose();
+    }}  title={title}/>;
+  } else {
+    return (
+      <ModalOverlay onClick={onClose}>
+        <ModalWrapper>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <TextWrapper>
+              <Title>{title}</Title>
+              <hr />
+              <Subtitle>{`저자: ${authors.join(', ')}`}</Subtitle>
+              <Subtitle>{`키워드: ${keywords.join(', ')}`}</Subtitle>
+              <Subtitle>초록</Subtitle>
+              <CaptionWrapper>
+                <Caption>{abstract}</Caption>
+              </CaptionWrapper>
+            </TextWrapper>
+            <ArticleButton onClick={handleDownload}>{btnTxt}</ArticleButton>
+            {videoIds.includes(id) ? <VideoButton onClick={handleVideo}>영상 보기</VideoButton> : null}
+          </ModalContent>
+        </ModalWrapper>
+      </ModalOverlay>
+    );
+  }
 };
