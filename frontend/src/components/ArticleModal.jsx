@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import axios from "axios";
+import React from 'react';
+import { useState } from 'react';
+import styled from 'styled-components';
+import axios from 'axios';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -92,73 +93,56 @@ const CaptionWrapper = styled.div`
   overflow-y: auto;
 `;
 
-const IframeWrapper = styled.iframe`
-  width: 80%;
-  height: 80%;
-  border: none;
-  background-color: #ffffff; /* PDF가 흰 배경으로 보이도록 */
-`;
-
 export const ArticleModal = ({ title, authors, keywords, abstract, id, onClose }) => {
-  const [btnTxt, setBtnTxt] = useState("논문 열람하기");
-  const [isViewingPDF, setIsViewingPDF] = useState(false); // PDF 뷰어 모달 상태
-  const [pdfUrl, setPDFUrl] = useState(null); // PDF URL 상태
-
+  const [btnTxt, setBtnTxt] = useState('논문 열람하기');
   const client = axios.create();
-
-  const handleDownloadAndView = async () => {
-    setBtnTxt("다운로드 중...");
+  const handleDownload = async () => {
+    setBtnTxt('다운로드 중...');
     try {
       const response = await client.post(
-        "https://locallink.hasclassmatching.com/paperGet",
+        'https://locallink.hasclassmatching.com/paperGet',
         { data: id },
-        { responseType: "blob" } // 서버로부터 blob 데이터 받기
+        { responseType: 'blob' } // 서버로부터 blob 데이터 받기
       );
-
+  
       if (response.data.size === 0) {
         throw new Error("서버에서 받은 파일 데이터가 비어 있습니다.");
       }
-
-      const blob = new Blob([response.data], { type: "application/pdf" }); // Blob 생성
+  
+      const blob = new Blob([response.data], { type: 'application/pdf' }); // Blob 생성
       const url = window.URL.createObjectURL(blob); // Blob URL 생성
-      setPDFUrl(url); // PDF URL 저장
-      setIsViewingPDF(true); // PDF 뷰어 모달 열기
-      onClose(); // 현재 모달 닫기
+      const a = document.createElement('a'); // 임시 앵커 태그 생성
+      a.href = url;
+      a.download = `${title}.pdf`; // 다운로드될 파일 이름
+      document.body.appendChild(a); // 앵커 태그 추가
+      a.click(); // 클릭 이벤트 발생
+      document.body.removeChild(a); // 앵커 태그 제거
+      window.URL.revokeObjectURL(url); // Blob URL 해제
     } catch (error) {
-      console.error("파일 다운로드 실패:", error);
-      alert("파일을 다운로드할 수 없습니다.");
+      console.error('파일 다운로드 실패:', error);
+      alert('파일을 다운로드할 수 없습니다.');
     }
-    setBtnTxt("논문 열람하기");
+    setBtnTxt('논문 열람하기');
   };
 
   return (
-    <>
-      {!isViewingPDF ? (
-        <ModalOverlay onClick={onClose}>
-          <ModalWrapper>
-            <ModalContent onClick={(e) => e.stopPropagation()}>
-              <TextWrapper>
-                <CloseButton onClick={onClose}>&times;</CloseButton>
-                <Title>{title}</Title>
-                <hr />
-                <Subtitle>{`저자: ${authors.join(", ")}`}</Subtitle>
-                <Subtitle>{`키워드: ${keywords.join(", ")}`}</Subtitle>
-                <Subtitle>초록</Subtitle>
-                <CaptionWrapper>
-                  <Caption>{abstract}</Caption>
-                </CaptionWrapper>
-              </TextWrapper>
-              <ArticleButton onClick={handleDownloadAndView}>{btnTxt}</ArticleButton>
-            </ModalContent>
-          </ModalWrapper>
-        </ModalOverlay>
-      ) : (
-        <ModalOverlay onClick={() => setIsViewingPDF(false)}>
-          <ModalWrapper>
-            <IframeWrapper src={pdfUrl} />
-          </ModalWrapper>
-        </ModalOverlay>
-      )}
-    </>
+    <ModalOverlay onClick={onClose}>
+      <ModalWrapper>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <TextWrapper>
+            <CloseButton onClick={onClose}>&times;</CloseButton>
+            <Title>{title}</Title>
+            <hr />
+            <Subtitle>{`저자: ${authors.join(', ')}`}</Subtitle>
+            <Subtitle>{`키워드: ${keywords.join(', ')}`}</Subtitle>
+            <Subtitle>초록</Subtitle>
+            <CaptionWrapper>
+              <Caption>{abstract}</Caption>
+            </CaptionWrapper>
+          </TextWrapper>
+          <ArticleButton onClick={handleDownload}>{btnTxt}</ArticleButton>
+        </ModalContent>
+      </ModalWrapper>
+    </ModalOverlay>
   );
 };
