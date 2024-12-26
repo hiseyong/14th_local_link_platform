@@ -34,7 +34,7 @@ const Arrow = styled.div`
   animation: ${moveLeft} 3s infinite, ${gradientMove} 8s linear infinite; /* 애니메이션을 자연스럽게 반복 */
   position: relative;
   top: 75vh;
-  left: 40%;
+  left: 20%;
 `;
 
 export function ArrowAnimation() {
